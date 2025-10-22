@@ -2,7 +2,7 @@
 //  BeaconManager.swift
 //  Btimes
 //
-//  Created by andy on 2025/10/20.
+//  Created by andy on 2025/10/23.
 //
 
 
@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import UserNotifications
 import Combine
+import MessageUI
 
 class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
@@ -30,7 +31,7 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func setupBeaconRegion() {
-        let uuid = UUID(uuidString: "8DE9BE11-2268-4015-B040-418924420612")! // 替換成你的 iBeacon UUID
+        let uuid = UUID(uuidString: "8DE9BE11-2268-4015-B040-418924420612")!
         beaconRegion = CLBeaconRegion(uuid: uuid, identifier: "MyBeaconRegion")
         beaconRegion?.notifyOnEntry = true
         beaconRegion?.notifyOnExit = true
@@ -45,6 +46,7 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         let entry = "📥 進入區域：\(timestamp)"
         addTimestamp(entry)
         sendNotification(title: "進入 iBeacon 區域", body: "時間：\(timestamp)")
+        maybeSendEmail(for: timestamp)
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
@@ -64,6 +66,11 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         timestamps.insert(entry, at: 0)
     }
 
+    func clearTimestamps() {
+        timestamps.removeAll()
+        UserDefaults.standard.removeObject(forKey: "BeaconTimestamps")
+    }
+
     func loadTimestamps() {
         if let saved = UserDefaults.standard.array(forKey: "BeaconTimestamps") as? [String] {
             timestamps = saved
@@ -80,5 +87,14 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                                             content: content,
                                             trigger: nil)
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+    }
+
+    func maybeSendEmail(for timestamp: String) {
+        let today = String(timestamp.prefix(10))
+        let todayEntries = timestamps.filter { $0.contains(today) }
+        if todayEntries.count == 1 {
+            print("📧 準備寄送當天第一筆紀錄：\(timestamp)")
+            // 這裡可以觸發寄信邏輯，例如開啟郵件 App 或呼叫 API
+        }
     }
 }
