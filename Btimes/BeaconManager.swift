@@ -1,0 +1,84 @@
+//
+//  BeaconManager.swift
+//  Btimes
+//
+//  Created by andy on 2025/10/20.
+//
+
+
+import Foundation
+import CoreLocation
+import UserNotifications
+import Combine
+
+class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+    private let locationManager = CLLocationManager()
+    private var beaconRegion: CLBeaconRegion?
+
+    @Published var timestamps: [String] = [] {
+        didSet {
+            UserDefaults.standard.set(timestamps, forKey: "BeaconTimestamps")
+        }
+    }
+
+    override init() {
+        super.init()
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
+        loadTimestamps()
+        setupBeaconRegion()
+    }
+
+    func setupBeaconRegion() {
+        let uuid = UUID(uuidString: "8DE9BE11-2268-4015-B040-418924420612")! // 替換成你的 iBeacon UUID
+        beaconRegion = CLBeaconRegion(uuid: uuid, identifier: "MyBeaconRegion")
+        beaconRegion?.notifyOnEntry = true
+        beaconRegion?.notifyOnExit = true
+
+        if let region = beaconRegion {
+            locationManager.startMonitoring(for: region)
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        let timestamp = formattedTime()
+        let entry = "📥 進入區域：\(timestamp)"
+        addTimestamp(entry)
+        sendNotification(title: "進入 iBeacon 區域", body: "時間：\(timestamp)")
+    }
+
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        let timestamp = formattedTime()
+        let exit = "📤 離開區域：\(timestamp)"
+        addTimestamp(exit)
+        sendNotification(title: "離開 iBeacon 區域", body: "時間：\(timestamp)")
+    }
+
+    func formattedTime() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+        return formatter.string(from: Date())
+    }
+
+    func addTimestamp(_ entry: String) {
+        timestamps.insert(entry, at: 0)
+    }
+
+    func loadTimestamps() {
+        if let saved = UserDefaults.standard.array(forKey: "BeaconTimestamps") as? [String] {
+            timestamps = saved
+        }
+    }
+
+    func sendNotification(title: String, body: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+
+        let request = UNNotificationRequest(identifier: UUID().uuidString,
+                                            content: content,
+                                            trigger: nil)
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+    }
+}
