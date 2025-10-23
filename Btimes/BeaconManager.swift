@@ -10,7 +10,6 @@ import Foundation
 import CoreLocation
 import UserNotifications
 import Combine
-import MessageUI
 
 class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
@@ -46,7 +45,6 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         let entry = "📥 進入區域：\(timestamp)"
         addTimestamp(entry)
         sendNotification(title: "進入 iBeacon 區域", body: "時間：\(timestamp)")
-        maybeSendEmail(for: timestamp)
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
@@ -71,6 +69,10 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         UserDefaults.standard.removeObject(forKey: "BeaconTimestamps")
     }
 
+    func deleteRecords(for date: String) {
+        timestamps.removeAll { $0.contains(date) }
+    }
+
     func loadTimestamps() {
         if let saved = UserDefaults.standard.array(forKey: "BeaconTimestamps") as? [String] {
             timestamps = saved
@@ -87,14 +89,5 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                                             content: content,
                                             trigger: nil)
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-    }
-
-    func maybeSendEmail(for timestamp: String) {
-        let today = String(timestamp.prefix(10))
-        let todayEntries = timestamps.filter { $0.contains(today) }
-        if todayEntries.count == 1 {
-            print("📧 準備寄送當天第一筆紀錄：\(timestamp)")
-            // 這裡可以觸發寄信邏輯，例如開啟郵件 App 或呼叫 API
-        }
     }
 }

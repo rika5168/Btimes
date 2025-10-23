@@ -13,47 +13,54 @@ struct ContentView: View {
     @State private var showShareSheet = false
     @State private var exportText = ""
 
-    var groupedTimestamps: [String: [String]] {
-        Dictionary(grouping: beaconManager.timestamps) { entry in
+    var groupedDates: [String] {
+        let dates = beaconManager.timestamps.compactMap { entry in
             let components = entry.components(separatedBy: "：")
             if components.count > 1 {
                 let fullTime = components[1].trimmingCharacters(in: .whitespaces)
                 return String(fullTime.prefix(10)) // yyyy/MM/dd
             }
-            return "未知日期"
+            return nil
         }
+        return Array(Set(dates)).sorted(by: >)
     }
 
     var body: some View {
         NavigationView {
             VStack {
                 List {
-                    ForEach(groupedTimestamps.keys.sorted(by: >), id: \.self) { date in
-                        Section(header: Text("📅 \(date)")) {
-                            ForEach(groupedTimestamps[date]!, id: \.self) { entry in
-                                Text(entry)
-                            }
+                    ForEach(groupedDates, id: \.self) { date in
+                        NavigationLink(destination: RecordView(date: date, allRecords: beaconManager.timestamps)) {
+                            Text("📅 \(date)")
                         }
                     }
+                    .onDelete(perform: deleteDates)
                 }
 
                 HStack {
-                    Button("🗑️ 清除紀錄") {
+                    Button("🗑️ 清除所有紀錄") {
                         beaconManager.clearTimestamps()
                     }
                     .padding()
 
-                    Button("📤 匯出紀錄") {
+                    Button("📤 匯出並分享") {
                         exportText = beaconManager.timestamps.joined(separator: "\n")
                         showShareSheet = true
                     }
                     .padding()
                 }
             }
-            .navigationTitle("iBeacon 記錄")
+            .navigationTitle("iBeacon 日期清單")
             .sheet(isPresented: $showShareSheet) {
                 ActivityView(activityItems: [exportText])
             }
+        }
+    }
+
+    func deleteDates(at offsets: IndexSet) {
+        for index in offsets {
+            let date = groupedDates[index]
+            beaconManager.deleteRecords(for: date)
         }
     }
 }
