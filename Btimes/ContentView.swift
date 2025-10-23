@@ -30,7 +30,7 @@ struct ContentView: View {
             VStack {
                 List {
                     ForEach(groupedDates, id: \.self) { date in
-                        NavigationLink(destination: RecordView(date: date, allRecords: beaconManager.timestamps)) {
+                        NavigationLink(destination: RecordView(date: date, beaconManager: beaconManager)) {
                             Text("📅 \(date)")
                         }
                     }
