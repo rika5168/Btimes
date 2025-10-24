@@ -6,6 +6,8 @@
     <string>需要使用您的位置來偵測 iBeacon</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>需要使用您的位置來偵測 iBeacon</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>需要使用藍牙來發射 iBeacon 訊號</string>
     <key>UIBackgroundModes</key>
     <array>
         <string>location</string>

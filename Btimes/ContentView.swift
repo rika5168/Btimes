@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Btimes
 //
-//  Created by andy on 2025/10/23.
+//  Created by andy on 2025/10/25.
 //
 
 
@@ -46,6 +46,11 @@ struct ContentView: View {
                     Button("📤 匯出並分享") {
                         exportText = beaconManager.timestamps.joined(separator: "\n")
                         showShareSheet = true
+                    }
+                    .padding()
+
+                    NavigationLink(destination: SettingsView()) {
+                        Text("⚙️ 設定")
                     }
                     .padding()
                 }
