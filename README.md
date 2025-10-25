@@ -14,11 +14,13 @@
 
 ## 📱 畫面預覽
 
-> 建議放上 2～3 張 App 截圖，例如：
 > - 主畫面：日期清單與匯出按鈕
 > - ![photo_2025-10-25 18 48 48](https://github.com/user-attachments/assets/51a3bb69-43de-4776-b258-8cf43c63d94f)
 > - 記錄頁：單日時間戳記列表
+> - ![photo_2025-10-25 18 48 48](https://github.com/user-attachments/assets/6289c792-5154-4c7a-b48f-2afc6f0de31d)
 > - 設定頁：Beacon 開關與 Bluetooth 狀態提示
+> - ![photo_2025-10-25 18 48 48](https://github.com/user-attachments/assets/533923e0-3844-4319-9428-a44c895e8813)
+
 
 ## 🛠 安裝與使用
 
