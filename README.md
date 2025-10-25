@@ -15,7 +15,7 @@
 ## 📱 畫面預覽
 
 > 建議放上 2～3 張 App 截圖，例如：
->
+>![photo_2025-10-25 18 39 34](https://github.com/user-attachments/assets/16add493-8767-418c-b9b4-1e1e4f614c4b)
 > - 主畫面：日期清單與匯出按鈕
 > - 記錄頁：單日時間戳記列表
 > - 設定頁：Beacon 開關與 Bluetooth 狀態提示
@@ -27,9 +27,13 @@
 3. 確保 Info.plist 包含以下權限設定：
 
 ```xml
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>需要使用您的位置來偵測 iBeacon</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>需要使用您的位置來偵測 iBeacon</string>
 <key>NSBluetoothAlwaysUsageDescription</key>
 <string>需要使用藍牙來發射 iBeacon 訊號</string>
 <key>UIBackgroundModes</key>
 <array>
-    <string>bluetooth-central</string>
+    <string>location</string>
 </array>
