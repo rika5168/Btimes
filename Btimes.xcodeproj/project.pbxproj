@@ -37,6 +37,13 @@
 			);
 			target = A118BEBB2EA61D8800AC4ED7 /* Btimes */;
 		};
+		A126C99A2EAF1E880026F51F /* Exceptions for "Btimes" folder in "BtimesUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+			);
+			target = A118BED22EA61D8B00AC4ED7 /* BtimesUITests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +51,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				A11E3D512EA67D6500474FF2 /* Exceptions for "Btimes" folder in "Btimes" target */,
+				A126C99A2EAF1E880026F51F /* Exceptions for "Btimes" folder in "BtimesUITests" target */,
 			);
 			path = Btimes;
 			sourceTree = "<group>";
