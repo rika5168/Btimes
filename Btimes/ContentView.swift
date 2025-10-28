@@ -10,8 +10,6 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var beaconManager = BeaconManager()
-    @State private var showShareSheet = false
-    @State private var exportText = ""
 
     var groupedDates: [String] {
         let dates = beaconManager.timestamps.compactMap { entry in
@@ -43,12 +41,6 @@ struct ContentView: View {
                     }
                     .padding()
 
-                    Button("📤 匯出並分享") {
-                        exportText = beaconManager.timestamps.joined(separator: "\n")
-                        showShareSheet = true
-                    }
-                    .padding()
-
                     NavigationLink(destination: SettingsView()) {
                         Text("⚙️ 設定")
                     }
@@ -56,9 +48,6 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("iBeacon 日期清單")
-            .sheet(isPresented: $showShareSheet) {
-                ActivityView(activityItems: [exportText])
-            }
         }
     }
 
